@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 
 namespace WebApp.Areas.Identity.Pages.Account
 {
@@ -20,10 +22,15 @@ namespace WebApp.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly ILogger<LoginModel> _logger;
+        private readonly IDNTCaptchaValidatorService _validatorService;
+        private readonly DNTCaptchaOptions _captchaOptions;
 
-        public LoginModel(ILogger<LoginModel> logger)
+        public LoginModel(ILogger<LoginModel> logger, IDNTCaptchaValidatorService validatorService,
+            IOptions<DNTCaptchaOptions> options)
         {
             _logger = logger;
+            _validatorService = validatorService;
+            _captchaOptions = options == null ? throw new ArgumentNullException(nameof(options)) : options.Value;
         }
 
         [BindProperty]
@@ -38,7 +45,7 @@ namespace WebApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            //[Required]
             //[EmailAddress]
             public string Email { get; set; }
 
@@ -66,12 +73,17 @@ namespace WebApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
+            if (!_validatorService.HasRequestValidCaptchaEntry(Language.English, DisplayMode.ShowDigits))
+            {
+                this.ModelState.AddModelError(_captchaOptions.CaptchaComponent.CaptchaInputName, "Please enter the security code as a number.");
+            }
+
             if (ModelState.IsValid)
             {
                 // Create a new identity with 2 claims based on the fields in the form
                 var identity = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, Input.Email),
+                    new Claim(ClaimTypes.Name, "Guest"),
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
 

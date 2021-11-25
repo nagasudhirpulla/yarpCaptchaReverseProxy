@@ -5,6 +5,13 @@
 }
 
 <header>
-    <h1>@ViewData["Title"]</h1>
-    <p>You have successfully logged out of the application.</p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h4>You are not logged out of the application</h4>
+        <p>Please click the logout button to logout of the application</p>
+    }
+    else
+    {
+        <p>You have successfully logged out of the application.</p>
+    }
 </header>
