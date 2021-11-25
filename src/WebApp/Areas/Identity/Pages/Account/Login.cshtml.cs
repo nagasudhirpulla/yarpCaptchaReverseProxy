@@ -57,7 +57,7 @@ namespace WebApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public void OnGet(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -69,7 +69,7 @@ namespace WebApp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public IActionResult OnPost(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 

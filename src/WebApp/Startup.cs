@@ -39,11 +39,10 @@ namespace WebApp
                 .AddCookie(options =>
                 {
                     // configure login path for return urls
-                    // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-5.0#cookie-settings
                     options.LoginPath = "/Identity/Account/Login";
                     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                     options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(Configuration.GetValue("CookieExpireMins", 60));
                 });
             services.AddRazorPages();
             services.AddReverseProxy().LoadFromConfig(Configuration.GetSection("ReverseProxy"));
