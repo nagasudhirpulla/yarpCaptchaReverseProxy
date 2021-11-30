@@ -44,7 +44,7 @@ namespace WebApp
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(Configuration.GetValue("CookieExpireMins", 60));
                 });
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddReverseProxy().LoadFromConfig(Configuration.GetSection("ReverseProxy"));
             services.AddDNTCaptcha(options =>
             {
